@@ -144,7 +144,7 @@ for ind=1:n-1
             
         % bdot track contorl    
         elseif strcmp(control.name, 'bdotTrack')
-            m(:, ind) = bdotTrackControl(Bb, sigma(:, ind), omega(:, ind), control);
+            m(:, ind) = bdotTrackControl(Bb, sigma(:, ind), omega(:, ind), control, beta_m);
             
         % first control law from Lovera paper
         elseif strcmp(control.name, 'loveraTrack1')

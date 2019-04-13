@@ -16,10 +16,7 @@ Gamma = (eye(3) - bhat*bhat');
 
 S = [0, Bb(3), -Bb(2); -Bb(3), 0, Bb(1); Bb(2), -Bb(1), 0];
 
-q = zeros(3,1);
-for i = 1:3
-    q(i) = 2*sigma_BR(i)/(1+norm(sigma_BR)^2);
-end
+q = 2*sigma_BR/(1-norm(sigma_BR)^2);
 
 u = -(epsilon^2*K_sigma*q + epsilon*K_omega*I*omega);
 

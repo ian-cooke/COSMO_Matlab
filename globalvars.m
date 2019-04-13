@@ -23,7 +23,7 @@ global use_gravity_gradient;
 global R_c_o;
 
 % Initialize globals
-tstep = 0.1; % integration time-step
+tstep = 1; % integration time-step
 I = diag([1/12*4.8*(0.1^2+0.1^2), 1/12*4.8*(0.3^2+0.1^2), 1/12*4.8*(0.3^2+0.1^2)]); % [kg-m^2] inertia tensor
 %I = diag([0.1,0.2,0.05]);
 beta_m_0 = 0; % [rad]

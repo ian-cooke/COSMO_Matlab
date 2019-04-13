@@ -10,16 +10,17 @@ global tstep;
 global I;
 global T;
 
-% Initial position and angular velocity
+% Initial state & other params
 sigma0 = [0.2, 0.3, 0.4]';
 omega0 = deg2rad([5, 5, 5]'); % [rad/s]
+
 x0 = [sigma0; omega0];
-u.name = 'loveraTrack1';
-u.sigma_RN = [0.0, 0.0, 0.0]';
-u.K_sigma = 0.1;
-u.K_omega = 0.07;
-u.epsilon = 0.1;
-tspan = 0:tstep:30*T; % [s]
+u.name = 'bdotTrack';
+u.sigma_RN = [0.5, 0.0, -0.5]';
+u.K_sigma = 0.00000001;
+u.K_omega = 0.5;
+u.epsilon = 0.005;
+tspan = 0:tstep:50*T; % [s]
 
 % Calculate magnetic field
 Hb = calcMagField(tspan);
