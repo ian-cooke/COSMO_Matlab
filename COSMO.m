@@ -13,7 +13,6 @@ global T;
 % Initial state & other params
 sigma0 = [0.2, 0.3, 0.4]';
 omega0 = deg2rad([5, 5, 5]'); % [rad/s]
-
 x0 = [sigma0; omega0];
 u.name = 'bdotTrack';
 u.sigma_RN = [0.5, 0.0, -0.5]';

@@ -13,17 +13,19 @@ global h;
 global r;
 global mu;
 global Omega;
+global arg_per;
 global theta0;
 global thetadot;
 global T;
 global inc;
+global ecc;
 global gain;
 global m_max;
 global use_gravity_gradient;
 global R_c_o;
 
 % Initialize globals
-tstep = 1; % integration time-step
+tstep = 0.1; % integration time-step
 I = diag([1/12*4.8*(0.1^2+0.1^2), 1/12*4.8*(0.3^2+0.1^2), 1/12*4.8*(0.3^2+0.1^2)]); % [kg-m^2] inertia tensor
 %I = diag([0.1,0.2,0.05]);
 beta_m_0 = 0; % [rad]
@@ -35,8 +37,10 @@ h = 405; % [km] altitude
 r = (h + R_Earth); % [km] orbital radius
 mu = 398600; % [km^2/s^2] gravitational parameter
 Omega = 0; % [rad] right ascension of the ascending node
-inc = deg2rad(51); % [rad] inclination
-theta0 = 0; % [rad] true anomaly (as argument of periapsis is not defined)
+arg_per = 0;
+inc = deg2rad(51.6388); % [rad] inclination
+ecc = 0.0003449;
+theta0 = deg2rad(80); % [rad] true anomaly (as argument of periapsis is not defined)
 thetadot = sqrt(mu/r^3); % [rad/s] change in true anomaly
 T = 2*pi*sqrt(r^3/mu); % [s] orbital period
 gain = -1; % Default gain given by function
