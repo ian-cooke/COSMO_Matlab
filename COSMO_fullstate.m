@@ -23,11 +23,12 @@ omega0 = deg2rad([1, 1, 1]'); % [rad/s]
 % orbit elements
 [pos0, vel0] = kep2eci(r, ecc, rad2deg(inc), Omega, arg_per, rad2deg(theta0), mu);
 x0 = [sigma0; omega0; pos0; vel0];
-u.name = 'bdotTrack';
+u.name = 'loveraTrack1';
 u.sigma_RN = [0.5, 0.0, -0.5]';
-u.K_sigma = 0.0000001;
+u.K_sigma = 0.0001;
 u.K_omega = 50;
 u.epsilon = 0.005;
+u.use_velocitypoint = 0;
 tspan = 0:tstep:15*T; % [s]
 
 % Calculate magnetic field

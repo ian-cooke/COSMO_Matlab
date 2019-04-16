@@ -58,6 +58,9 @@ params.sigma_RN = sigma;
 u = sigma;
 m = sigma;
 
+% Gamma for lovera track control
+Gamma = 0;
+
 sigma(:, 1) = sigma0;
 omega(:, 1) = omega0;
 pos(:, 1) = pos0;
@@ -65,6 +68,7 @@ vel(:, 1) = vel0;
 
 h = tstep;
 t = tspan(1);
+Bb_prev = ones(3,1)*1e-5;
 
 % Integration loop
 tic
@@ -130,26 +134,31 @@ for ind=1:n-1
     vel(:, ind+1) = vel(:, ind) + h/6*(k1 + 2*k2 + 2*k3 + k4);
     
     % get the [TN] DCM (inertial to cross-track)
-    that = v./norm(v);
-    phat = p./norm(p);
-    hhat = cross(phat, that);
-    what = hhat./norm(hhat);
-    nhat = cross(that, what);
-    TN = zeros(3,3);
-    TN(1,1) = dot(nhat, [1;0;0]);
-    TN(1,2) = dot(nhat, [0;1;0]);
-    TN(1,3) = dot(nhat, [0;0;1]);
-    TN(2,1) = dot(that, [1;0;0]);
-    TN(2,2) = dot(that, [0;1;0]);
-    TN(2,3) = dot(that, [0;0;1]);
-    TN(3,1) = dot(what, [1;0;0]);
-    TN(3,2) = dot(what, [0;1;0]);
-    TN(3,3) = dot(what, [0;0;1]);
-    zeta = sqrt(trace(TN)+1);
-    sigma_RN = 1./(zeta*(zeta + 2))*[TN(2,3) - TN(3,2); TN(3,1) - TN(1,3); TN(1,2) - TN(2,1)];
-    control.sigma_RN = sigma_RN;
-    params.sigma_RN(:, ind+1) = sigma_RN;
-    params.sigma_BR(:, ind+1) = s - sigma_RN;
+    if control.use_velocitypoint
+        that = v./norm(v);
+        phat = p./norm(p);
+        hhat = cross(phat, that);
+        what = hhat./norm(hhat);
+        nhat = cross(that, what);
+        TN = zeros(3,3);
+        TN(1,1) = dot(nhat, [1;0;0]);
+        TN(1,2) = dot(nhat, [0;1;0]);
+        TN(1,3) = dot(nhat, [0;0;1]);
+        TN(2,1) = dot(that, [1;0;0]);
+        TN(2,2) = dot(that, [0;1;0]);
+        TN(2,3) = dot(that, [0;0;1]);
+        TN(3,1) = dot(what, [1;0;0]);
+        TN(3,2) = dot(what, [0;1;0]);
+        TN(3,3) = dot(what, [0;0;1]);
+        zeta = sqrt(trace(TN)+1);
+        sigma_RN = 1./(zeta*(zeta + 2))*[TN(2,3) - TN(3,2); TN(3,1) - TN(1,3); TN(1,2) - TN(2,1)];
+        control.sigma_RN = sigma_RN;
+        params.sigma_RN(:, ind+1) = sigma_RN;
+        params.sigma_BR(:, ind+1) = s - sigma_RN;
+    else
+        params.sigma_RN(:, ind+1) = control.sigma_RN;
+        params.sigma_BR(:, ind+1) = s - control.sigma_RN;
+    end
     
     
     % MRP switching
@@ -202,7 +211,8 @@ for ind=1:n-1
             
         % first control law from Lovera paper
         elseif strcmp(control.name, 'loveraTrack1')
-            m(:, ind) = loveraTrackControl1(Bb, sigma(:, ind), omega(:, ind), control);
+            Gamma = Gamma + calc_gamma(Bb, Bb_prev, t);
+            m(:, ind) = loveraTrackControl1(Bb, sigma(:, ind), omega(:, ind), control, Gamma);
             
         % second control law from Lovera paper
         elseif strcmp(control.name, 'loveraTrack2')
@@ -240,6 +250,7 @@ for ind=1:n-1
     omega(:, ind+1) = omega(:, ind) + h/6*(k1 + 2*k2 + 2*k3 + k4);
     
 t = t + h;
+Bb_prev = Bb;
 end
 toc
 
